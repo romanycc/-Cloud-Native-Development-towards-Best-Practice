@@ -1,0 +1,23 @@
+FROM python:3.10.10
+
+WORKDIR /app
+
+# Install necessary libraries for Chrome
+RUN apt-get update && apt-get install -y wget unzip xvfb libxi6 libgconf-2-4
+
+# Install Chromium browser
+RUN apt-get update && apt-get install -y chromium
+
+# Set the environment variable to use Chromium
+ENV CHROME_BIN=/usr/bin/chromium
+
+ADD . /app
+
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+EXPOSE 8400
+
+ENV NAME Earthquake
+
+CMD ["python", "earthquake.py"]
