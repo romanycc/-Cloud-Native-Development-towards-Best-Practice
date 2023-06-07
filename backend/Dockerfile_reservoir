@@ -1,0 +1,34 @@
+# Use an official Python runtime as a parent image
+FROM python:3.10.10
+
+# Set the working directory in the container to /app
+WORKDIR /app
+
+# Install necessary libraries for Chrome
+RUN apt-get update && apt-get install -y wget unzip xvfb libxi6 libgconf-2-4
+
+# Install Chromium browser
+RUN apt-get update && apt-get install -y chromium
+
+# Set the environment variable to use Chromium in Selenium
+ENV CHROME_BIN=/usr/bin/chromium
+
+# Add the current directory contents into the container at /app
+ADD . /app
+
+# Install any needed packages specified in requirements.txt
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# Make port 7500 available to the world outside this container
+EXPOSE 7500
+
+# Define environment variable
+ENV NAME Reservoir
+
+# Run reservoir.py when the container launches
+# setup the database schema once
+CMD ["python3", "setup.py"]
+
+# Run backend server
+CMD ["python3", "reservoir.py"]

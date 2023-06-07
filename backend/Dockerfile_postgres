@@ -1,0 +1,33 @@
+# Dockerfile_postgres
+# Using official postgres image
+FROM postgres:13
+
+# Expose the PostgreSQL port
+EXPOSE 5432
+
+# Add a database
+ENV POSTGRES_DB=liu
+
+# Set default user and password
+ENV POSTGRES_USER=liu
+ENV POSTGRES_PASSWORD=123456
+
+# Use trust authentication method
+ENV POSTGRES_HOST_AUTH_METHOD=trust 
+
+# Install Python, necessary packages, and netcat
+RUN apt-get update && apt-get install -y python3 python3-pip netcat postgresql-client
+RUN pip3 install psycopg2-binary
+
+COPY ./config.json /config.json
+
+COPY ./setup.py /setup.py
+
+# Copy the entrypoint script to the current directory
+# COPY ./entrypoint.sh /entrypoint.sh
+# RUN chmod +x /entrypoint.sh
+
+# ENTRYPOINT ["/entrypoint.sh"]
+
+# Expose additional port if needed
+EXPOSE 5433
